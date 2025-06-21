@@ -1,0 +1,113 @@
+{
+  "name": "jet4",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        -40
+      ],
+      "id": "af868999-e9bb-44bc-bbc1-25582ad9017a",
+      "webhookId": "6be1ae82-29b8-4bbd-904f-370880fa92c5",
+      "credentials": {
+        "telegramApi": {
+          "id": "bTg2ya1HtK5MQ8Ps",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"Telegram Trigger\"].json[\"message\"][\"chat\"][\"id\"] }}\n",
+        "text": "={{$node[\"Analyze Mood\"].json[\"choices\"][0][\"message\"][\"content\"]}}",
+        "additionalFields": {}
+      },
+      "name": "Send Response",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        580,
+        -40
+      ],
+      "id": "94a12890-aa1a-4717-a8b1-0b9f776ce87f",
+      "webhookId": "f1d538b3-6f68-4886-9d71-c7d8821c5c43",
+      "credentials": {
+        "telegramApi": {
+          "id": "bTg2ya1HtK5MQ8Ps",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mindcraft-kapidhwaj-openai-api-key.openai.azure.com/openai/deployments/mindcraft-gpt4o/chat/completions?api-version=2024-12-01-preview",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\",\n  \"api-key\": \"8WxLaoodYxa7XSK2rCiWuP3nqwWUShSUVd5FrjEYSqqROfIwc0qzJQQJ99BFAC77bzfXJ3w3AAABACOGweqQ\"\n}\n",
+        "sendBody": true,
+        "contentType": "=json",
+        "specifyBody": "json",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonBody": "{\n  \"model\": \"gpt-3.5-turbo\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a warm, emotionally intelligent mental health companion. Always respond kindly and supportively to any message the user sends. Never assume there's a mix-up or confusion, even if the message is short or unclear. If a message is casual, like 'hi', simply greet them back in a friendly and gentle way. If they seem distressed, respond with empathy and a suggestion. Keep replies short, no more than 2–3 sentences.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"={{ $json[\\\"message\\\"][\\\"text\\\"] }}\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        -20
+      ],
+      "id": "7d9acdda-0e25-42ba-a3d1-17ca95330cb1",
+      "name": "Analyze Mood"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Analyze Mood",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Mood": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5ead448b-3f09-4583-b306-5ab98816ba86",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1624afe5e9ea81ddcf418d487b3af29f52ff44887e91ddd363a7a795aa266e4e"
+  },
+  "id": "1Gw4zrRkXmtQC6Zj",
+  "tags": []
+}
